@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Dialog"
+    xtype="tabpanel">
+    <items jcr:primaryType="cq:WidgetCollection">
+        <properties
+            jcr:primaryType="cq:Panel"
+            title="Properties">
+            <items jcr:primaryType="cq:WidgetCollection">
+                <paths
+                    jcr:primaryType="cq:Widget"
+                    fieldLabel="Paths"
+                    name="./jcr:content/paths"
+                    typeHint="String"
+                    xtype="multifield">
+                    <fieldConfig
+                        jcr:primaryType="nt:unstructured"
+                        allowBlank="{Boolean}false"
+                        xtype="pathfield"/>
+                </paths>
+                <contentPath
+                    jcr:primaryType="cq:Widget"
+                    fieldLabel="Site Base Content Path"
+                    name="./jcr:content/contentPath"
+                    rootPath="/content"
+                    allowBlank="{Boolean}false"
+                    xtype="pathfield"/>
+                <version
+                    jcr:primaryType="cq:Widget"
+                    allowBlank="{Boolean}false"
+                    fieldLabel="Version"
+                    name="./jcr:content/version"
+                    xtype="textfield"/>
+                <maxHistory
+                    jcr:primaryType="cq:Widget"
+                    allowBlank="{Boolean}false"
+                    fieldLabel="Max History"
+                    name="./jcr:content/maxHistory"
+                    xtype="textfield"/>
+                <host
+                    jcr:primaryType="cq:Widget"
+                    fieldLabel="Host"
+                    name="./jcr:content/host"
+                    xtype="textfield"/>
+            </items>
+        </properties>
+    </items>
+</jcr:root>

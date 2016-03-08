@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- ====================================================================== -->
@@ -61,13 +62,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <java.version.source>1.7</java.version.source>
-        <java.version.target>1.7</java.version.target>
+        <java.version.source>1.8</java.version.source>
+        <java.version.target>1.8</java.version.target>
     </properties>
 
     <modules>
-        <module>aem-caching-bundle</module>
-        <module>aem-caching-package</module>
+        <module>versioned-assets</module>
+        <module>versioned-assets-ui</module>
     </modules>
 
     <!-- ====================================================================== -->
@@ -119,7 +120,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-scr-plugin</artifactId>
-                    <version>1.19.0</version>
+                    <version>1.17.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>org.slf4j</groupId>
@@ -139,7 +140,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>2.5.3</version>
+                    <version>3.5.0</version>
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
@@ -173,10 +174,10 @@
                             <haltOnFailure>true</haltOnFailure>
                             <lineRate>0</lineRate>
                             <branchRate>0</branchRate>
-                            <packageLineRate>80</packageLineRate>
-                            <packageBranchRate>80</packageBranchRate>
-                            <totalLineRate>80</totalLineRate>
-                            <totalBranchRate>80</totalBranchRate>
+                            <packageLineRate>0</packageLineRate>
+                            <packageBranchRate>0</packageBranchRate>
+                            <totalLineRate>0</totalLineRate>
+                            <totalBranchRate>0</totalBranchRate>
                         </check>
                         <formats>
                             <format>html</format>
@@ -244,6 +245,19 @@
                                         <ignore />
                                     </action>
                                 </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.felix</groupId>
+                                        <artifactId>maven-scr-plugin</artifactId>
+                                        <versionRange>[1.17.0,)</versionRange>
+                                        <goals>
+                                            <goal>scr</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
                     </configuration>
@@ -285,7 +299,7 @@
             <!-- Project -->
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>aem-caching-bundle</artifactId>
+                <artifactId>versioned-assets</artifactId>
                 <version>${project.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -294,13 +308,13 @@
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
-                <version>4.2.0</version>
+                <version>6.0.0</version>
                 <scope>provided</scope>
             </dependency>
-            <dependency>
+           <dependency>
                 <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.compendium</artifactId>
-                <version>4.2.0</version>
+                <artifactId>osgi.cmpn</artifactId>
+                <version>6.0.0</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -317,7 +331,12 @@
                 <version>1.9.12</version>
                 <scope>provided</scope>
             </dependency>
-
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.http.api</artifactId>
+                <version>2.3.2</version>
+                <scope>provided</scope>
+            </dependency>
             <!-- Apache Sling -->
             <dependency>
                 <groupId>org.apache.sling</groupId>
@@ -349,6 +368,14 @@
                 <groupId>javax.servlet.jsp</groupId>
                 <artifactId>jsp-api</artifactId>
                 <version>2.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!-- https://projectlombok.org/ -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.16.6</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -435,11 +462,10 @@
                 <version>18.0</version>
             </dependency>
 
-            <!-- Freemarker templating engine -->
             <dependency>
-                <groupId>org.freemarker</groupId>
-                <artifactId>freemarker</artifactId>
-                <version>2.3.23</version>
+                <groupId>io.marto.aem</groupId>
+                <artifactId>aem-lib</artifactId>
+                <version>0.1.0-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
 

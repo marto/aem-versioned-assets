@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured"
+    contentTypes="[text/html]"
+    enabled="{Boolean}true"
+    generatorType="htmlparser"
+    order="10"
+    paths="[/content]"
+    serializerType="htmlwriter"
+    transformerTypes="[asset-version-transformer,linkchecker,mobile,mobiledebug,contentsync]">
+    <transformer-mobile
+        jcr:primaryType="nt:unstructured"
+        component-optional="{Boolean}true"/>
+    <transformer-mobiledebug
+        jcr:primaryType="nt:unstructured"
+        component-optional="{Boolean}true"/>
+    <transformer-contentsync
+        jcr:primaryType="nt:unstructured"
+        component-optional="{Boolean}true"/>
+</jcr:root>

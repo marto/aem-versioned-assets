@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <!-- ====================================================================== -->
@@ -14,10 +15,10 @@
     <!-- ====================================================================== -->
     <!-- P R O J E C T  D E S C R I P T I O N -->
     <!-- ====================================================================== -->
-    <artifactId>aem-caching-package</artifactId>
+    <artifactId>versioned-assets-ui</artifactId>
     <packaging>content-package</packaging>
-    <name>AEM Content Package for aem-caching-bundle</name>
-    <description>Provides an installer for the bundle module along with required resources.</description>
+    <name>Versioned Assets UI</name>
+    <description>AEM Versioned Assets User Interface (UI) &amp; Installer</description>
 
     <!-- ====================================================================== -->
     <!-- B U I L D -->
@@ -60,10 +61,18 @@
                             <embeddeds>
                                 <embedded>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>aem-caching-bundle</artifactId>
-                                    <target>/libs/marto/install</target>
+                                    <artifactId>versioned-assets</artifactId>
+                                    <target>/libs/vassets/install</target>
+                                </embedded>
+                                <embedded>
+                                    <groupId>io.marto.aem</groupId>
+                                    <artifactId>aem-lib</artifactId>
+                                    <target>/libs/vassets/install</target>
                                 </embedded>
                             </embeddeds>
+                            <properties>
+                                <acHandling>merge_preserve</acHandling>
+                            </properties>
                         </configuration>
                     </execution>
                 </executions>
@@ -82,7 +91,11 @@
         <!-- Project -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>aem-caching-bundle</artifactId>
+            <artifactId>versioned-assets</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.marto.aem</groupId>
+            <artifactId>aem-lib</artifactId>
         </dependency>
     </dependencies>
 
