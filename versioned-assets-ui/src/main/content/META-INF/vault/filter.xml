@@ -5,5 +5,5 @@
 <workspaceFilter version="1.0">
     <filter root="/libs/vassets" />
     <filter root="/etc/vassets" mode="merge" />
-		<filter root="/home/users/system/versioned-assets-service"/>
+    <filter root="/home/users/system/versioned-assets-service"/>
 </workspaceFilter>
