@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
     <filter root="/content/rep:policy/allow"/>
-    <filter root="/home/users/system/commerce/commerce-orders-service"/>
+    <filter root="/home/users/system/versioned-assets-service"/>
+    <filter root="/etc/vassets/rep:policy"/>
 </workspaceFilter>
