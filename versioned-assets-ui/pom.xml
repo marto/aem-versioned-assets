@@ -62,12 +62,12 @@
                                 <embedded>
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>versioned-assets</artifactId>
-                                    <target>/libs/vassets/install</target>
+                                    <target>/apps/vassets/install</target>
                                 </embedded>
                                 <embedded>
                                     <groupId>io.marto.aem</groupId>
                                     <artifactId>aem-lib</artifactId>
-                                    <target>/libs/vassets/install</target>
+                                    <target>/apps/vassets/install</target>
                                 </embedded>
                             </embeddeds>
                             <properties>

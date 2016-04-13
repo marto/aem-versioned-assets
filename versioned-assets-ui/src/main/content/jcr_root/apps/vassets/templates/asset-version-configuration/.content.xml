@@ -6,7 +6,7 @@
     allowedPaths="[/etc/vassets]"
     shortTitle="Versioned Assets">
     <jcr:content
-        cq:scaffolding="/libs/vassets/components/page/asset-version-configuration/scaffolding"
+        cq:scaffolding="/apps/vassets/components/page/asset-version-configuration/scaffolding"
         jcr:primaryType="cq:PageContent"
         sling:resourceType="vassets/components/page/asset-version-configuration"/>
 </jcr:root>
