@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
-    jcr:primaryType="rep:SystemUser"
-    jcr:uuid="8ace969b-e6e3-3b2e-bff0-9c46862d8662"
-    rep:authorizableId="versioned-assets-service"
-    rep:principalName="versioned-assets-service"/>
