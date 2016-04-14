@@ -2,7 +2,9 @@ package io.marto.aem.vassets.servlet;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang.BooleanUtils.toBoolean;
+import static org.apache.commons.lang3.StringUtils.endsWith;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.startsWith;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 import static org.apache.commons.lang3.math.NumberUtils.toLong;
 
@@ -63,7 +65,7 @@ public class AssetVersionUpdateServlet extends SlingAllMethodsServlet {
      */
     @Override
     protected void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
-        final String path = trimToNull(request.getParameter("path"));
+        String path = getPath(request);
         if (isBlank(path)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "'path' paramater is missing");
             return;
@@ -89,6 +91,20 @@ public class AssetVersionUpdateServlet extends SlingAllMethodsServlet {
             final int responseCode = e instanceof VersionedAssetUpdateException ? ((VersionedAssetUpdateException)e).getResponse() : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
             response.sendError(responseCode, e.getMessage());
         }
+    }
+
+    private String getPath(SlingHttpServletRequest request) {
+        String path = trimToNull(request.getParameter("path"));
+        if (isBlank(path)) {
+            return path;
+        }
+        if (!startsWith(path,"/etc/vassets/")) {
+            path = "/etc/vassets/" + path;
+        }
+        if (!endsWith(path,"/jcr:content")) {
+            path = path + "/jcr:content";
+        }
+        return path;
     }
 
     private void replicate(final String path) throws ReplicationException {
