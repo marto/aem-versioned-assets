@@ -80,4 +80,8 @@ public class Configuration {
         this.version = newVersion;
     }
 
+    public boolean inHistory(long revision) {
+        return history.contains(revision);
+    }
+
 }

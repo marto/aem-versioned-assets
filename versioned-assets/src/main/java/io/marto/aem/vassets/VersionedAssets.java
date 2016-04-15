@@ -27,5 +27,5 @@ public interface VersionedAssets {
      * @param version
      * @return
      */
-    Configuration findConfigByPath(String basePath, long version);
+    Configuration findConfigByRewritePath(String basePath, long version);
 }

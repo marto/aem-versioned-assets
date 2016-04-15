@@ -96,7 +96,7 @@ public class AssetVersionTransformerFactoryImpl implements TransformerFactory, V
     }
 
     @Override
-    public Configuration findConfigByPath(String basePath, long version) {
+    public Configuration findConfigByRewritePath(String basePath, long version) {
         final Configuration conf = configs.getByRewritePath(basePath);
         if (conf != null) {
             List<Long> hist = conf.getHistory();
