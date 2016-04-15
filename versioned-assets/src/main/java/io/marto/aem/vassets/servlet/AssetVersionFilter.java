@@ -26,7 +26,7 @@ import io.marto.aem.vassets.model.Configuration;
 
 /**
  * A {@link Filter Servlet Filter} that intercepts any requests with a version fingerprint, checks the fingerprint to see if it's valid
- * and either forwards it to be handled by the system, redirects it to the latest fingerprinted URL or bombs out and returns a 404.
+ * and either forwards it to be handled by the system, redirects it to the latest fingerprinted URL or bombs out and returns a 410.
  */
 @SlingFilter(
     scope = { SlingFilterScope.REQUEST },

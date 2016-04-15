@@ -19,8 +19,6 @@ import lombok.ToString;
 
 /**
  * Models a single Versioned Asset configuration
- *
- * @author mpetrovsky
  */
 @Model(adaptables = Resource.class)
 @ToString(of = { "path", "version" })
@@ -43,7 +41,6 @@ public class Configuration {
     /**
      * The content path that should be processed ( eg: /content/somesite )
      */
-    // TODO MJP - This should just be one path and mandatory
     @Inject
     private String contentPath;
 
@@ -72,6 +69,12 @@ public class Configuration {
         history = new CopyOnWriteArrayList<Long>(history == null ? Collections.emptyList() : history);
     }
 
+    /**
+     * Set a new version and update the history. Do not call this method directly but instead use
+     * {@link io.marto.aem.vassets.VersionedAssets#updateVersion(long)}
+     *
+     * @param newVersion the new version
+     */
     public void addRevision(long newVersion) {
         history.add(0, newVersion);
         while (history.size() > getMaxHistory()) {
@@ -80,6 +83,9 @@ public class Configuration {
         this.version = newVersion;
     }
 
+    /**
+     * @return true if <code>revision</code> is in history, false otherwise.
+     */
     public boolean inHistory(long revision) {
         return history.contains(revision);
     }
