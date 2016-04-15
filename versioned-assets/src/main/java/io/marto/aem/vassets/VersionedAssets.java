@@ -21,8 +21,9 @@ public interface VersionedAssets {
     /**
      * Find configuration based on a rewritepath
      *
-     * @param basePath
-     * @return
+     * @param basePath the base of the versioned path, before the "/v-{number}-v/..." tag.
+     *
+     * @return the configuration if one found, null if none found
      */
     Configuration findConfigByRewritePath(String basePath);
 }

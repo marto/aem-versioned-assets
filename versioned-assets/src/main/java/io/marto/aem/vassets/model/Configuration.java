@@ -71,7 +71,7 @@ public class Configuration {
 
     /**
      * Set a new version and update the history. Do not call this method directly but instead use
-     * {@link io.marto.aem.vassets.VersionedAssets#updateVersion(long)}
+     * {@link io.marto.aem.vassets.VersionedAssets#updateVersion(String, long)}
      *
      * @param newVersion the new version
      */
@@ -84,6 +84,8 @@ public class Configuration {
     }
 
     /**
+     * @param revision the version to check for in the history
+     *
      * @return true if <code>revision</code> is in history, false otherwise.
      */
     public boolean inHistory(long revision) {
