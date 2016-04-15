@@ -1,6 +1,6 @@
 package io.marto.aem.vassets.servlet;
 
-import static java.lang.String.format;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.math.NumberUtils.toLong;
 
 import java.io.IOException;
@@ -55,13 +55,13 @@ public class AssetVersionFilter extends AbstractSlingFilter {
             if (conf != null) {
                 final long fingerprint = toLong(matcher.group(2));
                 if (conf.getVersion() == fingerprint) {
-                    final String newPath = format("%s/%s", uriBase, matcher.group(3));
+                    final String newPath = uri(uriBase, null, matcher.group(3),request.getQueryString());
                     LOG.debug("Rewriting request {} to {}", requestURI, newPath);
                     response.setHeader("Cache-Control", "max-age=31104000, public");
                     request.getRequestDispatcher(newPath, new RequestDispatcherOptions()).include(request, response);
                     processed = true;
                 } else {
-                    final String newPath = format("%s/v-%d-v/%s", uriBase, conf.getVersion(), matcher.group(3));
+                    final String newPath = uri(uriBase, conf.getVersion(), matcher.group(3),request.getQueryString());
                     if (conf.inHistory(fingerprint)) {
                         LOG.debug("Redirecting request {} to {}", requestURI, newPath);
                         response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
@@ -79,6 +79,18 @@ public class AssetVersionFilter extends AbstractSlingFilter {
         if (!processed) {
             chain.doFilter(request, response);
         }
+    }
+
+    private String uri(String base, Long version, String tail, String queryString) {
+        final StringBuilder uri = new StringBuilder(base).append("/");
+        if (version != null) {
+            uri.append("v-").append(version).append("-v/");
+        }
+        uri.append(tail);
+        if (isNotBlank(queryString)) {
+            uri.append("?").append(queryString);
+        }
+        return uri.toString();
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(AssetVersionFilter.class);
