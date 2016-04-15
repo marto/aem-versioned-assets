@@ -111,9 +111,9 @@ public class AssetVersionUpdateServlet extends SlingAllMethodsServlet {
         resourceResolverFactory.execute(SERVICE, resolver -> replicate(path, resolver));
     }
 
-    private boolean replicate(final String path, final ResourceResolver resolver) throws ReplicationException {
+    private Void replicate(final String path, final ResourceResolver resolver) throws ReplicationException {
         replicator.replicate(resolver.adaptTo(Session.class), ReplicationActionType.ACTIVATE, path, REP_OPTIONS);
-        return true;
+        return null;
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(AssetVersionUpdateServlet.class);

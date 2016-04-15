@@ -50,21 +50,29 @@ public class AssetVersionFilter extends AbstractSlingFilter {
         boolean processed = false;
 
         if (matcher.find()) {
-            final long fingerprint = toLong(matcher.group(2));
-            final Configuration conf = versionedAssets.findConfigByRewritePath(matcher.group(1), fingerprint);
+            final String uriBase = matcher.group(1);
+            final Configuration conf = versionedAssets.findConfigByRewritePath(uriBase);
             if (conf != null) {
+                final long fingerprint = toLong(matcher.group(2));
                 if (conf.getVersion() == fingerprint) {
-                    final String newPath = format("%s/%s", matcher.group(1), matcher.group(3));
+                    final String newPath = format("%s/%s", uriBase, matcher.group(3));
                     LOG.debug("Rewriting request {} to {}", requestURI, newPath);
                     response.setHeader("Cache-Control", "max-age=31104000, public");
                     request.getRequestDispatcher(newPath, new RequestDispatcherOptions()).include(request, response);
                     processed = true;
-                } else if (conf.inHistory(fingerprint)) {
-                    final String newPath = format("%s/v-%d-v/%s", matcher.group(1), conf.getVersion(), matcher.group(3));
-                    LOG.debug("Redirecting request {} to {}", requestURI, newPath);
-                    response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-                    response.setHeader("Location", newPath);
-                    processed = true;
+                } else {
+                    final String newPath = format("%s/v-%d-v/%s", uriBase, conf.getVersion(), matcher.group(3));
+                    if (conf.inHistory(fingerprint)) {
+                        LOG.debug("Redirecting request {} to {}", requestURI, newPath);
+                        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+                        response.setHeader("Location", newPath);
+                        processed = true;
+                    } else {
+                        LOG.debug("Ignoring request {} as it's too old (not in history of possible requests).", requestURI);
+                        response.setHeader("Location", newPath);
+                        response.sendError(HttpServletResponse.SC_GONE, newPath);
+                        processed = true;
+                    }
                 }
             }
         }

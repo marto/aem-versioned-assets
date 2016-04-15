@@ -2,6 +2,8 @@ package io.marto.aem.vassets.impl;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.startsWith;
+import static org.osgi.service.event.EventConstants.EVENT_FILTER;
+import static org.osgi.service.event.EventConstants.EVENT_TOPIC;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,6 @@ import org.apache.sling.rewriter.Transformer;
 import org.apache.sling.rewriter.TransformerFactory;
 import org.apache.sling.settings.SlingSettingsService;
 import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +45,8 @@ import io.marto.aem.vassets.servlet.RequestContext;
 @Service
 @Properties({
     @Property(name = "pipeline.type", value = "asset-version-transformer", propertyPrivate = true),
-    @Property(name = EventConstants.EVENT_TOPIC, value = { "org/apache/sling/api/resource/Resource/*" }),
-    @Property(name = EventConstants.EVENT_FILTER,value = "(&(path=/etc/vassets/*/jcr:content)(resourceType=vassets/components/page/asset-version-configuration))")
+    @Property(name = EVENT_TOPIC, value = { "org/apache/sling/api/resource/Resource/*" }),
+    @Property(name = EVENT_FILTER, value = "(&(path=/etc/vassets/*/jcr:content)(resourceType=vassets/components/page/asset-version-configuration))")
 })
 public class AssetVersionTransformerFactoryImpl implements TransformerFactory, VersionedAssets, EventHandler {
 
@@ -100,23 +101,8 @@ public class AssetVersionTransformerFactoryImpl implements TransformerFactory, V
     }
 
     @Override
-    public Configuration findConfigByRewritePath(String basePath, long version) {
-        final Configuration conf = configs.getByRewritePath(basePath);
-        if (conf != null) {
-            List<Long> hist = conf.getHistory();
-            if (hist == null) {
-                LOG.warn("Configuration {} does not have a version history!", conf);
-                return null;
-            } else {
-                if (hist.contains(version)) {
-                    return conf;
-                } else {
-                    LOG.info("Request is too old for {}", conf);
-                    return null;
-                }
-            }
-        }
-        return null;
+    public Configuration findConfigByRewritePath(String basePath) {
+        return configs.getByRewritePath(basePath);
     }
 
     private Configuration update(Configuration conf, long version) throws VersionedAssetUpdateException {

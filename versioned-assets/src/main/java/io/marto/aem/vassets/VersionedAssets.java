@@ -9,7 +9,6 @@ import io.marto.aem.vassets.model.Configuration;
  */
 public interface VersionedAssets {
 
-
     /**
      * Update the asset version.
      *
@@ -19,13 +18,11 @@ public interface VersionedAssets {
      */
     void updateVersion(String path, long version) throws VersionedAssetUpdateException;
 
-
     /**
-     * Find configuration based on incoming path request
+     * Find configuration based on a rewritepath
      *
      * @param basePath
-     * @param version
      * @return
      */
-    Configuration findConfigByRewritePath(String basePath, long version);
+    Configuration findConfigByRewritePath(String basePath);
 }
