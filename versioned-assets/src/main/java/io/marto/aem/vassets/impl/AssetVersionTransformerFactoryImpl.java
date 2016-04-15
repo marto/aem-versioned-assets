@@ -24,6 +24,9 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.rewriter.Transformer;
 import org.apache.sling.rewriter.TransformerFactory;
 import org.apache.sling.settings.SlingSettingsService;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,16 +37,17 @@ import io.marto.aem.vassets.VersionedAssets;
 import io.marto.aem.vassets.model.Configuration;
 import io.marto.aem.vassets.servlet.RequestContext;
 
-
 /**
  * Creates a transformer to rewrite asset links.
  */
 @Component
 @Service
 @Properties({
-    @Property(name = "pipeline.type", value = "asset-version-transformer", propertyPrivate = true)
+    @Property(name = "pipeline.type", value = "asset-version-transformer", propertyPrivate = true),
+    @Property(name = EventConstants.EVENT_TOPIC, value = { "org/apache/sling/api/resource/Resource/*" }),
+    @Property(name = EventConstants.EVENT_FILTER,value = "(&(path=/etc/vassets/*/jcr:content)(resourceType=vassets/components/page/asset-version-configuration))")
 })
-public class AssetVersionTransformerFactoryImpl implements TransformerFactory, VersionedAssets {
+public class AssetVersionTransformerFactoryImpl implements TransformerFactory, VersionedAssets, EventHandler {
 
     private static final String SRVC = "versionedAssets";
     private static final String RTYPE_CONFIG = "vassets/components/page/asset-version-configuration";
@@ -137,6 +141,11 @@ public class AssetVersionTransformerFactoryImpl implements TransformerFactory, V
             throw new VersionedAssetUpdateException(format("Failed to update %s", conf), e, HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
         return conf;
+    }
+
+    @Override
+    public void handleEvent(Event event) {
+        configs.markForReload(resolverFactory);
     }
 
     private static class Configurations {
