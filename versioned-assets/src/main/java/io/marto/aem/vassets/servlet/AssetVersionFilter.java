@@ -55,7 +55,7 @@ public class AssetVersionFilter extends AbstractSlingFilter {
             if (conf != null) {
                 final long fingerprint = toLong(matcher.group(2));
                 if (conf.getVersion() == fingerprint) {
-                    final String newPath = uri(uriBase, null, matcher.group(3),request.getQueryString());
+                    final String newPath = uri(uriBase, null, matcher.group(3), null);
                     LOG.debug("Rewriting request {} to {}", requestURI, newPath);
                     response.setHeader("Cache-Control", "max-age=31104000, public");
                     request.getRequestDispatcher(newPath, new RequestDispatcherOptions()).include(request, response);
