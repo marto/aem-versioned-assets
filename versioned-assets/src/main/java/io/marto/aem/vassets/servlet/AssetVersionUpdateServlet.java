@@ -10,7 +10,6 @@ import static org.apache.commons.lang3.math.NumberUtils.toLong;
 
 import java.io.IOException;
 
-import javax.jcr.Session;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,19 +17,12 @@ import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.sling.SlingServlet;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.day.cq.replication.ReplicationActionType;
-import com.day.cq.replication.ReplicationException;
-import com.day.cq.replication.ReplicationOptions;
-import com.day.cq.replication.Replicator;
-
-import io.marto.aem.lib.TypedResourceResolverFactory;
+import io.marto.aem.vassets.AssetVersionService;
 import io.marto.aem.vassets.VersionedAssetUpdateException;
-import io.marto.aem.vassets.VersionedAssets;
 
 /**
  * Updates the version of a versioned asset directory.
@@ -44,21 +36,7 @@ import io.marto.aem.vassets.VersionedAssets;
 public class AssetVersionUpdateServlet extends SlingAllMethodsServlet {
 
     @Reference
-    private transient VersionedAssets versionedAssets;
-
-    @Reference
-    private TypedResourceResolverFactory resourceResolverFactory;
-
-    @Reference
-    private Replicator replicator;
-
-    private static final ReplicationOptions REP_OPTIONS = new ReplicationOptions();
-    private static final String SERVICE = "versionedAssets";;
-
-    static {
-        REP_OPTIONS.setSynchronous(true);
-        REP_OPTIONS.setSuppressStatusUpdate(false);
-    }
+    private transient AssetVersionService assetVersionService;
 
     /**
      * Performs the update for the version.
@@ -77,19 +55,18 @@ public class AssetVersionUpdateServlet extends SlingAllMethodsServlet {
         }
         final boolean replicate = toBoolean(request.getParameter("replicate"));
         try {
-            versionedAssets.updateVersion(path, version);
-
             if (replicate) {
-                replicate(path);
+                assetVersionService.updateVersionAndActivate(path, version);
+            } else {
+                assetVersionService.updateVersion(path, version);
             }
             response.setContentType("text/plain");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().append("OK");
-        } catch (VersionedAssetUpdateException | ReplicationException e) {
+        } catch (VersionedAssetUpdateException e) {
             LOG.warn(format("Failed to update path(%s) with version %s: %s", path, version, e), e);
             response.setContentType("text/plain");
-            final int responseCode = e instanceof VersionedAssetUpdateException ? ((VersionedAssetUpdateException)e).getResponse() : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-            response.sendError(responseCode, e.getMessage());
+            response.sendError(e.getResponse(), e.getMessage());
         }
     }
 
@@ -105,15 +82,6 @@ public class AssetVersionUpdateServlet extends SlingAllMethodsServlet {
             path = path + "/jcr:content";
         }
         return path;
-    }
-
-    private void replicate(final String path) throws ReplicationException {
-        resourceResolverFactory.execute(SERVICE, resolver -> replicate(path, resolver));
-    }
-
-    private Void replicate(final String path, final ResourceResolver resolver) throws ReplicationException {
-        replicator.replicate(resolver.adaptTo(Session.class), ReplicationActionType.ACTIVATE, path, REP_OPTIONS);
-        return null;
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(AssetVersionUpdateServlet.class);

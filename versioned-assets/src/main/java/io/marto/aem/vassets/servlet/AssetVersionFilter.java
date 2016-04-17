@@ -21,7 +21,7 @@ import org.apache.sling.api.request.RequestDispatcherOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.marto.aem.vassets.VersionedAssets;
+import io.marto.aem.vassets.AssetVersionService;
 import io.marto.aem.vassets.model.Configuration;
 
 /**
@@ -38,7 +38,7 @@ import io.marto.aem.vassets.model.Configuration;
 public class AssetVersionFilter extends AbstractSlingFilter {
 
     @Reference
-    private VersionedAssets versionedAssets;
+    private AssetVersionService assetVersionService;
 
 
     private Pattern PATTERN = Pattern.compile("^(/.*)/v-([0-9]+)-v/(.*)$");
@@ -51,7 +51,7 @@ public class AssetVersionFilter extends AbstractSlingFilter {
 
         if (matcher.find()) {
             final String uriBase = matcher.group(1);
-            final Configuration conf = versionedAssets.findConfigByRewritePath(uriBase);
+            final Configuration conf = assetVersionService.findConfigByRewritePath(uriBase);
             if (conf != null) {
                 final long fingerprint = toLong(matcher.group(2));
                 if (conf.getVersion() == fingerprint) {
@@ -82,6 +82,7 @@ public class AssetVersionFilter extends AbstractSlingFilter {
     }
 
     private String uri(String base, Long version, String tail, String queryString) {
+        /// TODO USE URIBuilder
         final StringBuilder uri = new StringBuilder(base).append("/");
         if (version != null) {
             uri.append("v-").append(version).append("-v/");

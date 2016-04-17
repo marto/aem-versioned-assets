@@ -71,7 +71,7 @@ public class Configuration {
 
     /**
      * Set a new version and update the history. Do not call this method directly but instead use
-     * {@link io.marto.aem.vassets.VersionedAssets#updateVersion(String, long)}
+     * {@link io.marto.aem.vassets.AssetVersionService#updateVersion(String, long)}
      *
      * @param newVersion the new version
      */

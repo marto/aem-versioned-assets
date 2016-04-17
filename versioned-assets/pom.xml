@@ -57,6 +57,11 @@
                             com.day.cq.replication;version="[5.0,6.5]",
                             *
                         </Import-Package>
+                        <Export-Package>
+                            io.marto.aem.vassets,
+                            io.marto.aem.vassets.model
+                        </Export-Package>
+                        <Private-Package>io.marto.aem.vassets.servlet</Private-Package>
                         <Sling-Model-Packages>io.marto.aem.vassets.model</Sling-Model-Packages>
                     </instructions>
                 </configuration>

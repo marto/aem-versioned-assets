@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import javax.jcr.Session;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.felix.scr.annotations.Activate;
@@ -23,20 +24,22 @@ import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.rewriter.Transformer;
-import org.apache.sling.rewriter.TransformerFactory;
-import org.apache.sling.settings.SlingSettingsService;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.day.cq.replication.ReplicationActionType;
+import com.day.cq.replication.ReplicationException;
+import com.day.cq.replication.ReplicationOptions;
+import com.day.cq.replication.Replicator;
+
 import io.marto.aem.lib.TypedResourceResolver;
 import io.marto.aem.lib.TypedResourceResolverFactory;
+import io.marto.aem.vassets.AssetVersionService;
 import io.marto.aem.vassets.VersionedAssetUpdateException;
-import io.marto.aem.vassets.VersionedAssets;
 import io.marto.aem.vassets.model.Configuration;
-import io.marto.aem.vassets.servlet.RequestContext;
 
 /**
  * Creates a transformer to rewrite asset links.
@@ -44,60 +47,51 @@ import io.marto.aem.vassets.servlet.RequestContext;
 @Component
 @Service
 @Properties({
-    @Property(name = "pipeline.type", value = "asset-version-transformer", propertyPrivate = true),
     @Property(name = EVENT_TOPIC, value = { "org/apache/sling/api/resource/Resource/*" }),
     @Property(name = EVENT_FILTER, value = "(&(path=/etc/vassets/*/jcr:content)(resourceType=vassets/components/page/asset-version-configuration))")
 })
-public class AssetVersionTransformerFactoryImpl implements TransformerFactory, VersionedAssets, EventHandler {
+public class AssetVersionServiceImplImpl implements AssetVersionService, EventHandler {
 
     private static final String SRVC = "versionedAssets";
     private static final String RTYPE_CONFIG = "vassets/components/page/asset-version-configuration";
-    private static final AssetVersionTransformerImpl NULL_TRANSFORMER = new AssetVersionTransformerImpl(null);
 
-    private boolean enabled = false;
+    @Reference
+    private Replicator replicator;
 
     @Reference
     private TypedResourceResolverFactory resolverFactory;
 
-    @Reference
-    private SlingSettingsService settings;
-
-    @Reference
-    private RequestContext requestContext;
-
     private Configurations configs = new Configurations();
+
+    private static final ReplicationOptions REP_OPTIONS = new ReplicationOptions();
+
+    static {
+        REP_OPTIONS.setSynchronous(true);
+        REP_OPTIONS.setSuppressStatusUpdate(false);
+    }
 
     @Activate
     @Modified
     public void init() {
-        this.enabled = settings.getRunModes().contains("publish");
         configs.markForReload(resolverFactory);
    }
 
     @Override
-    public Transformer createTransformer() {
-        if (!enabled) {
-            return NULL_TRANSFORMER;
-        }
-        String reqPath = requestContext.getRequestedResourcePath();
-        if (!startsWith(reqPath, "/content")) {
-            return NULL_TRANSFORMER;
-        }
-        Configuration config = configs.getByContentPath(reqPath);
-        if (config == null) {
-            LOG.debug("Can't locate config for content path '{}'", reqPath);
-            return NULL_TRANSFORMER;
-        }
-        return new AssetVersionTransformerImpl(config);
+    public void updateVersion(String path, long version) throws VersionedAssetUpdateException {
+        updateVersion(path, version, false);
     }
 
     @Override
-    public void updateVersion(String path, long version) throws VersionedAssetUpdateException {
+    public void updateVersionAndActivate(String path, long version) throws VersionedAssetUpdateException {
+        updateVersion(path, version, true);
+    }
+
+    private void updateVersion(String path, long version, boolean activate) throws VersionedAssetUpdateException {
         final Configuration conf = configs.getByConfigPath(path);
         if (conf == null) {
             throw new VersionedAssetUpdateException(format("Failed to find configuration at %s", path), null, HttpServletResponse.SC_NOT_FOUND);
         }
-        update(conf, version);
+        resolverFactory.execute(SRVC, resolver -> updateVersion(resolver, conf, version, activate));
     }
 
     @Override
@@ -105,11 +99,12 @@ public class AssetVersionTransformerFactoryImpl implements TransformerFactory, V
         return configs.getByRewritePath(basePath);
     }
 
-    private Configuration update(Configuration conf, long version) throws VersionedAssetUpdateException {
-        return resolverFactory.execute(SRVC, resolver -> updateVersion(resolver, conf, version));
+    @Override
+    public Configuration findConfigByContentPath(String path) {
+        return configs.getByContentPath(path);
     }
 
-    private Configuration updateVersion(TypedResourceResolver resolver, Configuration conf, long newVersion) throws VersionedAssetUpdateException {
+    private Void updateVersion(TypedResourceResolver resolver, Configuration conf, long newVersion, boolean activate) throws VersionedAssetUpdateException {
         final Resource resource = resolver.getResource(conf.getPath());
         final ModifiableValueMap props = resource == null ? null : resource.adaptTo(ModifiableValueMap.class);
         if (props == null) {
@@ -121,12 +116,24 @@ public class AssetVersionTransformerFactoryImpl implements TransformerFactory, V
         conf.addRevision(newVersion);
         props.put("history", conf.getHistory().toArray(new Long[conf.getHistory().size()]));
         props.put("version", conf.getVersion());
+        if (activate) {
+            replicate(conf.getPath(), resolver);
+        }
         try {
             resolver.commit();
         } catch (PersistenceException e) {
             throw new VersionedAssetUpdateException(format("Failed to update %s", conf), e, HttpServletResponse.SC_SERVICE_UNAVAILABLE);
         }
-        return conf;
+        return null;
+    }
+
+    private void replicate(final String path, final ResourceResolver resolver) throws VersionedAssetUpdateException {
+        try {
+            LOG.debug("Activating {}", path);
+            replicator.replicate(resolver.adaptTo(Session.class), ReplicationActionType.ACTIVATE, path, REP_OPTIONS);
+        } catch (ReplicationException e) {
+            throw new VersionedAssetUpdateException(format("Failed to activate configuration at %s", path), e, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
@@ -197,6 +204,6 @@ public class AssetVersionTransformerFactoryImpl implements TransformerFactory, V
         }
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(AssetVersionTransformerFactoryImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AssetVersionServiceImplImpl.class);
 }
 
