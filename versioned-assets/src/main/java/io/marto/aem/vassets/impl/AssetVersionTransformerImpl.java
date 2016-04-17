@@ -28,7 +28,7 @@ public class AssetVersionTransformerImpl extends DefaultTransformer {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if (conf != null && handlesElement(localName)) {
+        if (handlesElement(localName)) {
             AttributesImpl attrs = new AttributesImpl(attributes);
             for (int i = 0; i < attrs.getLength(); i++) {
                 String name = attrs.getLocalName(i);
@@ -51,7 +51,8 @@ public class AssetVersionTransformerImpl extends DefaultTransformer {
      *      True if the element can be handled, otherwise false.
      */
     private boolean handlesElement(String name) {
-        return conf != null && equalsIgnoreCase(name, "script") || equalsIgnoreCase(name, "link");
+        return conf != null && !conf.getPaths().isEmpty()
+                && (equalsIgnoreCase(name, "script") || equalsIgnoreCase(name, "link"));
     }
 
     /**
@@ -64,21 +65,19 @@ public class AssetVersionTransformerImpl extends DefaultTransformer {
      *      The processed result.
      */
     private String process(Configuration conf, String value) {
-        if (!conf.getPaths().isEmpty()) {
-            try {
-                URIBuilder builder = new URIBuilder(value);
-                for (String path : conf.getPaths()) {
-                    builder.setPath(replace(builder.getPath(), removeEnd(path, "/"), format("%s/v-%s-v", path, conf.getVersion())));
-                }
-
-                if (isNotEmpty(conf.getHost())) {
-                    builder.setHost(conf.getHost());
-                }
-
-                value = builder.toString();
-            } catch (URISyntaxException e) {
-                LOGGER.warn("Unable to convert URI", e);
+        try {
+            URIBuilder builder = new URIBuilder(value);
+            for (String path : conf.getPaths()) {
+                builder.setPath(replace(builder.getPath(), removeEnd(path, "/"), format("%s/v-%s-v", path, conf.getVersion())));
             }
+
+            if (isNotEmpty(conf.getHost())) {
+                builder.setHost(conf.getHost());
+            }
+
+            value = builder.toString();
+        } catch (URISyntaxException e) {
+            LOGGER.warn("Unable to convert URI", e);
         }
         return value;
     }
