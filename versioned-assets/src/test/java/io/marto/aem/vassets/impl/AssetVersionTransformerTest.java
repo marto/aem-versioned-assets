@@ -28,12 +28,12 @@ public class AssetVersionTransformerTest {
     @Mock
     private Configuration configuration;
 
-    private AssetVersionTransformer assetVersionTransformer;
+    private AssetVersionTransformer transformer;
 
     @Before
     public void setUp() {
-        assetVersionTransformer = new AssetVersionTransformer(configuration);
-        assetVersionTransformer.setContentHandler(contentHandler);
+        transformer = new AssetVersionTransformer(configuration);
+        transformer.setContentHandler(contentHandler);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class AssetVersionTransformerTest {
         attributesImpl.addAttribute(null, "href", "href", null, "/etc/designs/asset");
         attributesImpl.addAttribute(null, "class", "class", null, "test");
 
-        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
+        transformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());
@@ -67,7 +67,7 @@ public class AssetVersionTransformerTest {
         attributesImpl.addAttribute(null, "href", "href", null, "/etc/designs/asset");
         attributesImpl.addAttribute(null, "class", "class", null, "test");
 
-        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
+        transformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());
@@ -81,7 +81,7 @@ public class AssetVersionTransformerTest {
     public void startElementEmptyAttributes() throws Exception {
         AttributesImpl attributesImpl = new AttributesImpl();
 
-        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
+        transformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());
@@ -93,7 +93,7 @@ public class AssetVersionTransformerTest {
     public void startElementDifferentElement() throws Exception {
         AttributesImpl attributesImpl = new AttributesImpl();
 
-        assetVersionTransformer.startElement(null, "div", "div", attributesImpl);
+        transformer.startElement(null, "div", "div", attributesImpl);
 
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
@@ -104,13 +104,13 @@ public class AssetVersionTransformerTest {
 
     @Test
     public void testNullTransformerDoesNotPerformTransformations() throws SAXException {
-        assetVersionTransformer = new AssetVersionTransformer(null);
-        assetVersionTransformer.setContentHandler(contentHandler);
+        transformer = new AssetVersionTransformer(null);
+        transformer.setContentHandler(contentHandler);
 
         AttributesImpl attributesImpl = new AttributesImpl();
         attributesImpl.addAttribute(null, "src", "src", null, "/etc/designs/asset");
 
-        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
+        transformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());
@@ -126,7 +126,7 @@ public class AssetVersionTransformerTest {
         AttributesImpl attributesImpl = new AttributesImpl();
         attributesImpl.addAttribute(null, "src", "src", null, "/etc/designs/asset");
 
-        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
+        transformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());

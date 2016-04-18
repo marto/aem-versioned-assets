@@ -17,6 +17,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import io.marto.aem.vassets.model.Configuration;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class AssetVersionTransformer extends DefaultTransformer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AssetVersionTransformer.class);
 
+    @Getter(AccessLevel.MODULE)
     private final Configuration conf;
 
     @Override

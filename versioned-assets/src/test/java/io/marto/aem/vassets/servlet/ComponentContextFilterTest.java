@@ -1,8 +1,10 @@
 package io.marto.aem.vassets.servlet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,7 +44,6 @@ public class ComponentContextFilterTest {
     @Before
     public void setUp() {
         when(request.getResource()).thenReturn(resource);
-
     }
 
     public void givenReq(String path, String uri) {

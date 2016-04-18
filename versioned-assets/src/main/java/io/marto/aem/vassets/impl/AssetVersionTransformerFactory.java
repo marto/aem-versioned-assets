@@ -43,7 +43,7 @@ public class AssetVersionTransformerFactory implements TransformerFactory {
     }
 
     @Override
-    public Transformer createTransformer() {
+    public AssetVersionTransformer createTransformer() {
         if (!enabled) {
             return NULL_TRANSFORMER;
         }
