@@ -10,8 +10,8 @@
     <artifactId>aem-versioned-assets-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-
     <name>Versioned Assets Parent POM</name>
+    <description>A way to version assets (typically designs &amp; clientlibs) in AEM.</description>
     <url>https://github.com/marto/aem-versioned-assets</url>
     <inceptionYear>2015</inceptionYear>
 
@@ -25,6 +25,13 @@
             <organization>marto.io</organization>
         </developer>
     </developers>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License</name>
+            <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
 
     <scm>
         <connection>scm:git:https://github.com/marto/aem-versioned-assets.git</connection>
