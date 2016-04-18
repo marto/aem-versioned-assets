@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <name>Versioned Assets Parent POM</name>
-    <url>https://github.com/marto/aem-caching</url>
+    <url>https://github.com/marto/aem-versioned-assets</url>
     <inceptionYear>2015</inceptionYear>
 
     <organization>
@@ -27,15 +27,15 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/marto/aem-caching.git</connection>
-        <developerConnection>scm:git:https://github.com/marto/aem-caching.git</developerConnection>
-        <url>https://github.com/marto/aem-caching.git</url>
+        <connection>scm:git:https://github.com/marto/aem-versioned-assets.git</connection>
+        <developerConnection>scm:git:https://github.com/marto/aem-versioned-assets.git</developerConnection>
+        <url>https://github.com/marto/aem-versioned-assets.git</url>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>Git Hub</system>
-        <url>https://github.com/marto/aem-caching/issues</url>
+        <url>https://github.com/marto/aem-versioned-assets/issues</url>
     </issueManagement>
 
     <ciManagement>
