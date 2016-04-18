@@ -50,7 +50,7 @@ import io.marto.aem.vassets.model.Configuration;
     @Property(name = EVENT_TOPIC, value = { "org/apache/sling/api/resource/Resource/*" }),
     @Property(name = EVENT_FILTER, value = "(&(path=/etc/vassets/*/jcr:content)(resourceType=vassets/components/page/asset-version-configuration))")
 })
-public class AssetVersionServiceImplImpl implements AssetVersionService, EventHandler {
+public class AssetVersionServiceImpl implements AssetVersionService, EventHandler {
 
     private static final String SRVC = "versionedAssets";
     private static final String RTYPE_CONFIG = "vassets/components/page/asset-version-configuration";
@@ -204,6 +204,6 @@ public class AssetVersionServiceImplImpl implements AssetVersionService, EventHa
         }
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(AssetVersionServiceImplImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AssetVersionServiceImpl.class);
 }
 
