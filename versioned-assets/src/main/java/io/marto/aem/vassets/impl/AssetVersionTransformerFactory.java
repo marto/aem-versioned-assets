@@ -8,6 +8,7 @@ import org.apache.felix.scr.annotations.Modified;
 import org.apache.felix.scr.annotations.Properties;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
 import org.apache.sling.rewriter.TransformerFactory;
 import org.apache.sling.settings.SlingSettingsService;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import io.marto.aem.vassets.model.Configuration;
 import io.marto.aem.vassets.servlet.RequestContext;
 
 @Component
+@Service
 @Properties({
     @Property(name = "pipeline.type", value = "asset-version-transformer", propertyPrivate = true),
 })
