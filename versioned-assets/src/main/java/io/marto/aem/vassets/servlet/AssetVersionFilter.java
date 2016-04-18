@@ -17,7 +17,6 @@ import org.apache.felix.scr.annotations.sling.SlingFilter;
 import org.apache.felix.scr.annotations.sling.SlingFilterScope;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.request.RequestDispatcherOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +57,7 @@ public class AssetVersionFilter extends AbstractSlingFilter {
                     final String newPath = uri(uriBase, null, matcher.group(3), null);
                     LOG.debug("Rewriting request {} to {}", requestURI, newPath);
                     response.setHeader("Cache-Control", "max-age=31104000, public");
-                    request.getRequestDispatcher(newPath, new RequestDispatcherOptions()).include(request, response);
+                    request.getRequestDispatcher(newPath).include(request, response);
                     processed = true;
                 } else {
                     final String newPath = uri(uriBase, conf.getVersion(), matcher.group(3),request.getQueryString());

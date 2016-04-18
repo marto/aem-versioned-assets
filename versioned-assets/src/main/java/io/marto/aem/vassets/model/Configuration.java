@@ -13,8 +13,10 @@ import org.apache.sling.models.annotations.Optional;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
@@ -24,6 +26,8 @@ import lombok.ToString;
 @ToString(of = { "path", "version" })
 @Getter
 @EqualsAndHashCode(of = "path")
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Configuration {
 
     @Self
