@@ -7,15 +7,15 @@
     <!-- P A R E N T  P R O J E C T  D E S C R I P T I O N -->
     <!-- ====================================================================== -->
     <parent>
-        <groupId>io.marto.aem</groupId>
-        <artifactId>aem-caching</artifactId>
+        <groupId>io.marto.aem.vassets</groupId>
+        <artifactId>aem-versioned-assets-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <!-- ====================================================================== -->
     <!-- P R O J E C T  D E S C R I P T I O N -->
     <!-- ====================================================================== -->
-    <artifactId>versioned-assets-ui</artifactId>
+    <artifactId>aem-versioned-assets-ui</artifactId>
     <packaging>content-package</packaging>
     <name>Versioned Assets UI</name>
     <description>AEM Versioned Assets User Interface (UI) &amp; Installer</description>
@@ -61,7 +61,7 @@
                             <embeddeds>
                                 <embedded>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>versioned-assets</artifactId>
+                                    <artifactId>aem-versioned-assets</artifactId>
                                     <target>/apps/vassets/install</target>
                                 </embedded>
                                 <embedded>
@@ -91,7 +91,7 @@
         <!-- Project -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>versioned-assets</artifactId>
+            <artifactId>aem-versioned-assets</artifactId>
         </dependency>
         <dependency>
             <groupId>io.marto.sling</groupId>
