@@ -80,6 +80,9 @@ public class Configuration {
      * @param newVersion the new version
      */
     public void addRevision(long newVersion) {
+        if (!history.contains(this.version)) {
+            history.add(0, this.version);
+        }
         history.add(0, newVersion);
         while (history.size() > getMaxHistory()) {
             history.remove(history.size() - 1);

@@ -1,27 +1,31 @@
 package io.marto.aem.vassets.impl;
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.Resource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
+import com.day.cq.replication.ReplicationActionType;
+import com.day.cq.replication.ReplicationOptions;
 import com.day.cq.replication.Replicator;
 
 import io.marto.aem.lib.RepositoryLoginException;
-import io.marto.aem.lib.RepositoryTask;
-import io.marto.aem.lib.TypedResourceResolverFactory;
+import io.marto.aem.lib.TypedResourceResolver;
+import io.marto.aem.vassets.VersionedAssetUpdateException;
 import io.marto.aem.vassets.model.Configuration;
 import io.marto.aem.vassets.servlet.TestConfiguration;
 
@@ -32,25 +36,40 @@ public class AssetVersionServiceImplTest {
     private Replicator replicator;
 
     @Mock
-    private TypedResourceResolverFactory resolverFactory;
+    private TypedResourceResolver resolver;
+
+    @Spy
+    private TestTypedResourceResolverFactory resolverFactory = new TestTypedResourceResolverFactory("versionedAssets");
 
     @InjectMocks
     private AssetVersionServiceImpl service;
 
+    @Mock
+    private Resource resource;
+
+    @Mock
+    private ModifiableValueMap valueMap;
+
     @Before
     public void setUp() throws RepositoryLoginException, Exception {
+        resolverFactory.setResolver(resolver);
         service.init();
         givenConfigurations(new TestConfiguration("/etc/vassets/site-config", "/content/some-site", asList("/etc/some-site"), 10, asList(5l,6l,7l,8l,9l)));
     }
 
-    @SuppressWarnings("unchecked")
     private void givenConfigurations(TestConfiguration ... conf) throws Exception {
-        when(resolverFactory.execute(eq("versionedAssets"), any(RepositoryTask.class))).thenAnswer(new Answer<List<Configuration>>() {
-            @Override
-            public List<Configuration> answer(InvocationOnMock invocation) throws Throwable {
-                return asList(conf);
-            }
-        });
+        when(resolver.listModelChildren(
+                eq("/etc/vassets"),
+                eq("jcr:content"),
+                eq(Configuration.class),
+                eq("vassets/components/page/asset-version-configuration")))
+            .thenReturn(asList(conf));
+
+        when(resolver.getResource("/etc/vassets/site-config"))
+            .thenReturn(resource);
+
+        when(resource.adaptTo(ModifiableValueMap.class))
+            .thenReturn(valueMap);
     }
 
     @Test
@@ -69,10 +88,45 @@ public class AssetVersionServiceImplTest {
 
         service.handleEvent(null);
 
-        givenConfigurations(new TestConfiguration("/etc/vassets/site-config2", "/content/some-site2", asList("/etc/some-site2"), 10, asList(5l,6l,7l,8l,9l)));
+        givenConfigurations(new TestConfiguration("/etc/vassets/site-config2", "/content/some-site2", asList("/etc/some-site2","/etc/some-site3"), 10, asList(5l,6l,7l,8l,9l)));
 
         assertNull(service.findConfigByRewritePath("/etc/some-site"));
         assertNotNull(service.findConfigByRewritePath("/etc/some-site2"));
+        assertNotNull(service.findConfigByRewritePath("/etc/some-site3"));
+    }
+
+    @Test
+    public void testUpdate() throws Exception {
+        final Configuration config = service.findConfigByRewritePath("/etc/some-site");
+        assertNotNull(config);
+
+        service.updateVersion("/etc/vassets/site-config", 11l);
+
+        assertNotNull(config);
+        assertEquals(11L, config.getVersion());
+        assertTrue(config.inHistory(10l));
+    }
+
+    @Test
+    public void testUpdateWithReplication() throws Exception {
+        final Configuration config = service.findConfigByRewritePath("/etc/some-site");
+        assertNotNull(config);
+
+        service.updateVersionAndActivate("/etc/vassets/site-config", 11l);
+
+        assertNotNull(config);
+        assertEquals(11L, config.getVersion());
+        assertTrue(config.inHistory(10l));
+
+        verify(replicator).replicate(any(), eq(ReplicationActionType.ACTIVATE), eq("/etc/vassets/site-config"), any(ReplicationOptions.class));
+    }
+
+    @Test(expected =  VersionedAssetUpdateException.class)
+    public void testUpdateThrowsException() throws Exception {
+        final Configuration config = service.findConfigByRewritePath("/etc/some-site");
+        assertNotNull(config);
+
+        service.updateVersion("/etc/vassets/site-config", 10l);
 
     }
 
