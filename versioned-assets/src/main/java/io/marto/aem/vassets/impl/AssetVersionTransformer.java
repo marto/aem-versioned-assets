@@ -20,9 +20,9 @@ import io.marto.aem.vassets.model.Configuration;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class AssetVersionTransformerImpl extends DefaultTransformer {
+public class AssetVersionTransformer extends DefaultTransformer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AssetVersionTransformerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AssetVersionTransformer.class);
 
     private final Configuration conf;
 

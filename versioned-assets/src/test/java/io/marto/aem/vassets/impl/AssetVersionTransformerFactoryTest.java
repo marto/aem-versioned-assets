@@ -17,7 +17,7 @@ import io.marto.aem.vassets.model.Configuration;
 import io.marto.aem.vassets.servlet.RequestContext;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AssetVersionTransformerFactoryImplTest {
+public class AssetVersionTransformerFactoryTest {
 
     @Mock
     private SlingSettingsService settings;
@@ -32,7 +32,7 @@ public class AssetVersionTransformerFactoryImplTest {
     private Configuration configuration;
 
     @InjectMocks
-    private AssetVersionTransformationFactory transformerFactory;
+    private AssetVersionTransformerFactory transformerFactory;
 
     @Test
     public void createTransformer() {

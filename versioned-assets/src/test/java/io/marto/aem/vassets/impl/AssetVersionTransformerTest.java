@@ -20,7 +20,7 @@ import org.xml.sax.helpers.AttributesImpl;
 import io.marto.aem.vassets.model.Configuration;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AssetVersionTransformerImplTest {
+public class AssetVersionTransformerTest {
 
     @Mock
     private ContentHandler contentHandler;
@@ -28,12 +28,12 @@ public class AssetVersionTransformerImplTest {
     @Mock
     private Configuration configuration;
 
-    private AssetVersionTransformerImpl assetVersionTransformerImpl;
+    private AssetVersionTransformer assetVersionTransformer;
 
     @Before
     public void setUp() {
-        assetVersionTransformerImpl = new AssetVersionTransformerImpl(configuration);
-        assetVersionTransformerImpl.setContentHandler(contentHandler);
+        assetVersionTransformer = new AssetVersionTransformer(configuration);
+        assetVersionTransformer.setContentHandler(contentHandler);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class AssetVersionTransformerImplTest {
         attributesImpl.addAttribute(null, "href", "href", null, "/etc/designs/asset");
         attributesImpl.addAttribute(null, "class", "class", null, "test");
 
-        assetVersionTransformerImpl.startElement(null, "link", "link", attributesImpl);
+        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());
@@ -67,7 +67,7 @@ public class AssetVersionTransformerImplTest {
         attributesImpl.addAttribute(null, "href", "href", null, "/etc/designs/asset");
         attributesImpl.addAttribute(null, "class", "class", null, "test");
 
-        assetVersionTransformerImpl.startElement(null, "link", "link", attributesImpl);
+        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());
@@ -81,7 +81,7 @@ public class AssetVersionTransformerImplTest {
     public void startElementEmptyAttributes() throws Exception {
         AttributesImpl attributesImpl = new AttributesImpl();
 
-        assetVersionTransformerImpl.startElement(null, "link", "link", attributesImpl);
+        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());
@@ -93,7 +93,7 @@ public class AssetVersionTransformerImplTest {
     public void startElementDifferentElement() throws Exception {
         AttributesImpl attributesImpl = new AttributesImpl();
 
-        assetVersionTransformerImpl.startElement(null, "div", "div", attributesImpl);
+        assetVersionTransformer.startElement(null, "div", "div", attributesImpl);
 
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
@@ -104,13 +104,13 @@ public class AssetVersionTransformerImplTest {
 
     @Test
     public void testNullTransformerDoesNotPerformTransformations() throws SAXException {
-        assetVersionTransformerImpl = new AssetVersionTransformerImpl(null);
-        assetVersionTransformerImpl.setContentHandler(contentHandler);
+        assetVersionTransformer = new AssetVersionTransformer(null);
+        assetVersionTransformer.setContentHandler(contentHandler);
 
         AttributesImpl attributesImpl = new AttributesImpl();
         attributesImpl.addAttribute(null, "src", "src", null, "/etc/designs/asset");
 
-        assetVersionTransformerImpl.startElement(null, "link", "link", attributesImpl);
+        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());
@@ -126,7 +126,7 @@ public class AssetVersionTransformerImplTest {
         AttributesImpl attributesImpl = new AttributesImpl();
         attributesImpl.addAttribute(null, "src", "src", null, "/etc/designs/asset");
 
-        assetVersionTransformerImpl.startElement(null, "link", "link", attributesImpl);
+        assetVersionTransformer.startElement(null, "link", "link", attributesImpl);
 
         ArgumentCaptor<Attributes> argument = ArgumentCaptor.forClass(Attributes.class);
         verify(contentHandler).startElement((String) eq(null), eq("link"), eq("link"), argument.capture());

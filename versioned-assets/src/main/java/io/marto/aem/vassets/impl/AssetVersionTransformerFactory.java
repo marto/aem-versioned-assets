@@ -22,8 +22,8 @@ import io.marto.aem.vassets.servlet.RequestContext;
 @Properties({
     @Property(name = "pipeline.type", value = "asset-version-transformer", propertyPrivate = true),
 })
-public class AssetVersionTransformationFactory implements TransformerFactory {
-    private static final AssetVersionTransformerImpl NULL_TRANSFORMER = new AssetVersionTransformerImpl(null);
+public class AssetVersionTransformerFactory implements TransformerFactory {
+    private static final AssetVersionTransformer NULL_TRANSFORMER = new AssetVersionTransformer(null);
 
     @Reference
     private SlingSettingsService settings;
@@ -56,8 +56,8 @@ public class AssetVersionTransformationFactory implements TransformerFactory {
             LOG.debug("Can't locate config for content path '{}'", reqPath);
             return NULL_TRANSFORMER;
         }
-        return new AssetVersionTransformerImpl(config);
+        return new AssetVersionTransformer(config);
     }
 
-    private static final Logger LOG = LoggerFactory.getLogger(AssetVersionTransformationFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AssetVersionTransformerFactory.class);
 }
