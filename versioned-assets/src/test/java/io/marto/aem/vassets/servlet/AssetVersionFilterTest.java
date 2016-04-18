@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.RequestDispatcher;
@@ -23,7 +22,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import io.marto.aem.vassets.AssetVersionService;
-import io.marto.aem.vassets.model.Configuration;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AssetVersionFilterTest {
@@ -107,11 +105,5 @@ public class AssetVersionFilterTest {
 
     private void givenRequest(String path) {
         when(request.getRequestURI()).thenReturn(path);
-    }
-
-    private static class TestConfiguration extends Configuration {
-        private TestConfiguration(String configPath, String contentPath, List<String> requestPaths, long version, List<Long> versions) {
-            super(null, configPath, requestPaths, contentPath, version, 10, versions, null);
-        }
     }
 }
