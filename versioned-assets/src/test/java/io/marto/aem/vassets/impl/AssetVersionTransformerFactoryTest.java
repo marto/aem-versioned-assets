@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.sling.rewriter.Transformer;
 import org.apache.sling.settings.SlingSettingsService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
