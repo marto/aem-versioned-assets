@@ -172,8 +172,8 @@
         </dependency>
 
         <dependency>
-            <groupId>io.marto.aem</groupId>
-            <artifactId>aem-lib</artifactId>
+            <groupId>io.marto.sling</groupId>
+            <artifactId>sling-lib</artifactId>
         </dependency>
 
         <!-- Testing -->

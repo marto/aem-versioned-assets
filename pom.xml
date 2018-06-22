@@ -463,9 +463,9 @@
             </dependency>
 
             <dependency>
-                <groupId>io.marto.aem</groupId>
-                <artifactId>aem-lib</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <groupId>io.marto.sling</groupId>
+                <artifactId>sling-lib</artifactId>
+                <version>0.0.1</version>
                 <scope>provided</scope>
             </dependency>
 

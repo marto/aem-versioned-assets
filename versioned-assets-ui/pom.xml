@@ -65,8 +65,8 @@
                                     <target>/apps/vassets/install</target>
                                 </embedded>
                                 <embedded>
-                                    <groupId>io.marto.aem</groupId>
-                                    <artifactId>aem-lib</artifactId>
+                                    <groupId>io.marto.sling</groupId>
+                                    <artifactId>sling-lib</artifactId>
                                     <target>/apps/vassets/install</target>
                                 </embedded>
                             </embeddeds>
@@ -94,8 +94,8 @@
             <artifactId>versioned-assets</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.marto.aem</groupId>
-            <artifactId>aem-lib</artifactId>
+            <groupId>io.marto.sling</groupId>
+            <artifactId>sling-lib</artifactId>
         </dependency>
     </dependencies>
 
