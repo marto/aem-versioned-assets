@@ -1,12 +1,16 @@
-# Verssioned Assets
-A good practice is to make assets that never change longed lived to increase the cachability of your site. This project adds a versioned fingerprint to
-paths and rewrites all html output to reference any assets in the directory via a versioned fingerprinted URL. For example supose you have /etc/designs/myproject
-where you keep all your iconography css and javascript. You setup "Versioned Assets" to rewrite 
+# Adobe Experience Manager (AEM) Verssioned Assets
+A good web-performance practice is to make web assets that rarely change to be cached for a very long time. By increasing the "cacheability" of a site, it's performance / speed will naturaly increase. The web assets (think all css, js, fonts and iconography) of your site can typically be cached in a CDN, Apache Dispatcher and most importantly on the client's browser. The longer the better.
 
-    `/etc/designs/myproject/clientlibs/core.css`  to `/etc/designs/myproject/v-9-v/clientlibs/core.css` and use the versioned assets to bump
+This project transparently adds a versioned fingerprint to all configured paths (usualy your design/clientlibs path) and rewrites all html output to reference these assets via the fingerprinted URL. For example suppose you house all your iconograpy, css and js of your site in "/etc/designs/weretail". When configured, any html output genereated by AEM will rewrite your css, js links from `/etc/designs/weretail/clientlibs/core.css` to `/etc/designs/weretail/v-9-v/clientlibs/core.css` where the /v-9-v/ is the unique fingerprint that will change on every deployment. Any iconography, fonts etc references from the css / javascript should use relative path and thus all iconography will also benefit from being able to be cached forever.
 
-the entire directory on every deploy. All html output will be rewritted to use the fingerprinted URL transparently.
+## Full Example
+TODO
 
+## Setup & Install
+TODO
+
+
+### Project Struture
 
 ```
 .
@@ -19,18 +23,20 @@ the entire directory on every deploy. All html output will be rewritted to use t
 │       │           └── marto
 │       │               └── aem
 │       │                   └── vassets
+│       │                       ├── AssetVersionService.java
 │       │                       ├── impl
-│       │                       │   ├── AssetVersionTransformerFactoryImpl.java
-│       │                       │   └── AssetVersionTransformerImpl.java                <<< Transformer
+│       │                       │   ├── AssetVersionServiceImpl.java
+│       │                       │   ├── AssetVersionTransformerFactory.java
+│       │                       │   └── AssetVersionTransformer.java
 │       │                       ├── model
-│       │                       │   └── Configuration.java                              <<< Sling model that encapsulates configuration
+│       │                       │   └── Configuration.java
 │       │                       ├── servlet
 │       │                       │   ├── AbstractSlingFilter.java
 │       │                       │   ├── AssetVersionFilter.java
 │       │                       │   ├── AssetVersionUpdateServlet.java
 │       │                       │   ├── ComponentContextFilter.java
-│       │                       │   └─── RequestContext.java
-r       │                       ├── VersionedAssets.java
+│       │                       │   ├── RequestContext.java
+│       │                       │   └── scrap.jpage
 │       │                       └── VersionedAssetUpdateException.java
 │       └── test
 │           └── java
@@ -39,63 +45,58 @@ r       │                       ├── VersionedAssets.java
 │                       └── aem
 │                           └── vassets
 │                               ├── impl
-│                               │   ├── AssetVersionTransformerFactoryImplTest.java     <<<< TESTS TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-│                               │   └── AssetVersionTransformerImplTest.java
+│                               │   ├── AssetVersionServiceImplTest.java
+│                               │   ├── AssetVersionTransformerFactoryTest.java
+│                               │   ├── AssetVersionTransformerTest.java
+│                               │   └── TestTypedResourceResolverFactory.java
 │                               └── servlet
-│                                   └── AssetVersionUpdateServletTest.java
-├── versioned-assets-ui
-│   ├── pom.xml
-│   └── src
-│       └── main
-│           └── content
-│               └─── jcr_root
-│                   ├── apps
-│                   │   └── vassets
-│                   │       ├── components
-│                   │       │   └── page
-│                   │       │       └── asset-version-configuration                     <<<< Scafolding UI
-│                   │       │           ├── asset-version-configuration.html
-│                   │       │           ├── dialog.xml
-│                   │       │           └── scaffolding
-│                   │       │               └── _jcr_content
-│                   │       │                   └── dialog.xml
-│                   │       ├── config
-│                   │       │   └── org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-versioned-assets.xml
-│                   │       ├── install
-│                   │       └── templates
-│                   │           └── asset-version-configuration
-│                   └─── etc
-│                       └── vassets
-│                           └── _rep_policy.xml
+│                                   ├── AssetVersionFilterTest.java
+│                                   ├── ComponentContextFilterTest.java
+│                                   └── TestConfiguration.java
+├─── versioned-assets-ui
+│    ├── pom.xml
+│    └── src
+│        └── main
+│            └── content
+│                └─── jcr_root
+│                    ├── apps
+│                    │   └── vassets
+│                    │       ├── components
+│                    │       │   └── page
+│                    │       │       └── asset-version-configuration
+│                    │       │           ├── asset-version-configuration.html
+│                    │       │           ├── dialog.xml
+│                    │       │           └── scaffolding
+│                    │       │               └── _jcr_content
+│                    │       │                   └── dialog.xml
+│                    │       ├── install
+│                    │       └── templates
+│                    │           └── asset-version-configuration
+│                    └── etc
+│                        └── vassets
+│                            └── _rep_policy.xml
 ├── config-example
 │   ├── package.sh
 │   └── src
-│       └── jcr_root
+│       └─── jcr_root
 │           └── apps
-│               └── sol-dig
+│               └── vassets-conf
 │                   └── config
+│                       ├── org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-account.xml     <<< Service User Configuration
 │                       └── rewriter
-│                           └── versioned-assets                                      <<< Rewrite configuration example
-├── service-conf
-│   ├── package.sh
-│   └── src
-│       └── jcr_root
-│           └── apps
-│               └── vassets                                                            <<< Service User Configuration
-│                   └── config
-│                       └── org.apache.sling.serviceusermapping.impl.ServiceUserMapperImpl.amended-account.xml
-└─── service-conf-user
-    ├── package.sh                                                                  <<< ACLs and and Service User Principal eample config
-    └── src
-        └── jcr_root
-            ├── content
-            │   └── _rep_policy.xml
-            ├── etc
-            │   └── vassets
-            │       └── _rep_policy.xml
-            └── home
-                └── users
-                    └── system
-                        └── versioned-assets-service
+│                           └── versioned-assets                                                                   <<< Rewriter configuration example
+└─── service-user-and-acls
+   ├── package.sh
+   └── src
+       └─── jcr_root
+           ├── content
+           │   └── _rep_policy.xml                                                                                <<< Permissions
+           ├── etc
+           │   └── vassets
+           │       └── _rep_policy.xml                                                                            <<< Permissions
+           └── home
+               └── users
+                   └── system
+                       └── versioned-assets-service                                                               <<< OSGi Service User 
 ```
 

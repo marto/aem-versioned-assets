@@ -3,7 +3,7 @@
 <properties>
 <comment>FileVault Package Properties</comment>
 <entry key="createdBy">admin</entry>
-<entry key="name">versionedAssetsServicePerms</entry>
+<entry key="name">aem-versioned-assets-service-user-and-acls</entry>
 <entry key="lastModified">2018-03-07T23:36:11.117+11:00</entry>
 <entry key="lastModifiedBy">admin</entry>
 <entry key="acHandling">merge_preserve</entry>
@@ -14,7 +14,7 @@
 <entry key="dependencies"/>
 <entry key="packageFormatVersion">2</entry>
 <entry key="description"/>
-<entry key="group">my_packages</entry>
 <entry key="lastWrapped">2018-03-07T23:36:11.117+11:00</entry>
+<entry key="group">marto.io</entry>
 <entry key="lastWrappedBy">admin</entry>
 </properties>
