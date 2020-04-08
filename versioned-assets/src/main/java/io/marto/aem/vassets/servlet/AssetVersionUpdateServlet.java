@@ -49,10 +49,6 @@ public class AssetVersionUpdateServlet extends SlingAllMethodsServlet {
             return;
         }
         final long version = toLong(request.getParameter("version"), -1);
-        if (version < 0) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "'version' paramater is missing or not a number");
-            return;
-        }
         final boolean replicate = toBoolean(request.getParameter("replicate"));
         try {
             if (replicate) {

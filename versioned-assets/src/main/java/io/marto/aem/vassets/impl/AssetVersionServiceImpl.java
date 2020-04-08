@@ -91,7 +91,7 @@ public class AssetVersionServiceImpl implements AssetVersionService, EventHandle
         if (conf == null) {
             throw new VersionedAssetUpdateException(format("Failed to find configuration at %s", path), null, HttpServletResponse.SC_NOT_FOUND);
         }
-        resolverFactory.execute(SRVC, resolver -> updateVersion(resolver, conf, version, activate));
+        resolverFactory.execute(SRVC, resolver -> updateVersion(resolver, conf, version < 0l ? conf.getVersion() + 1l : version, activate));
     }
 
     @Override

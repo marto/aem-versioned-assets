@@ -11,7 +11,7 @@ public interface AssetVersionService {
     /**
      * Update the asset version.
      *
-     * @param   version - the new version; should be greater than the existing version.
+     * @param   version - the new version; should be greater than the existing version or {code}-1{code} to auto increment the version
      * @param   path - the path of the versioned asset configuration
      * @throws  VersionedAssetUpdateException if the configration can't be found or it failed to update it
      */
@@ -20,7 +20,7 @@ public interface AssetVersionService {
     /**
      * Same as {@link #updateVersion(String, long)} but also activates (replicates) the configuration to the publishers.
      *
-     * @param   version - the new version; should be greater than the existing version.
+     * @param   version - the new version; should be greater than the existing version or {code}-1{code} to auto increment the version
      * @param   path - the path of the versioned asset configuration
      * @throws  VersionedAssetUpdateException if the configration can't be found or it failed to update it
      */

@@ -108,6 +108,18 @@ public class AssetVersionServiceImplTest {
     }
 
     @Test
+    public void testUpdateAutoIncrement() throws Exception {
+        final Configuration config = service.findConfigByRewritePath("/etc/some-site");
+        assertNotNull(config);
+
+        service.updateVersion("/etc/vassets/site-config", -1l);
+
+        assertNotNull(config);
+        assertEquals(11L, config.getVersion());
+        assertTrue(config.inHistory(10l));
+    }
+
+    @Test
     public void testUpdateWithReplication() throws Exception {
         final Configuration config = service.findConfigByRewritePath("/etc/some-site");
         assertNotNull(config);
