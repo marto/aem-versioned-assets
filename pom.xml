@@ -533,13 +533,13 @@
         <repository>
             <id>adobe-public-releases</id>
             <name>Adobe Public Repository</name>
-            <url>http://repo.adobe.com/nexus/content/groups/public/</url>
+            <url>https://repo.adobe.com/nexus/content/groups/public/</url>
             <layout>default</layout>
         </repository>
         <repository>
             <id>central-maven-repository</id>
             <name>Central Maven Repository</name>
-            <url>http://repo.maven.apache.org/maven2/</url>
+            <url>https://repo.maven.apache.org/maven2/</url>
             <layout>default</layout>
         </repository>
     </repositories>
@@ -547,13 +547,13 @@
         <pluginRepository>
             <id>adobe-public-releases</id>
             <name>Adobe Public Repository</name>
-            <url>http://repo.adobe.com/nexus/content/groups/public/</url>
+            <url>https://repo.adobe.com/nexus/content/groups/public/</url>
             <layout>default</layout>
         </pluginRepository>
         <pluginRepository>
             <id>central-maven-repository</id>
             <name>Central Maven Repository</name>
-            <url>http://repo.maven.apache.org/maven2/</url>
+            <url>https://repo.maven.apache.org/maven2/</url>
             <layout>default</layout>
         </pluginRepository>
     </pluginRepositories>
