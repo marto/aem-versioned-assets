@@ -53,7 +53,7 @@
                         <Import-Package>
                             !org.apache.avalon.*,
                             !org.apache.log,
-                            com.day.cq.replication;version="[5.0,6.5]",
+                            com.day.cq.replication;version="[5.0,6.6]",
                             *
                         </Import-Package>
                         <Export-Package>
