@@ -67,6 +67,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.scm.id>github</project.scm.id>
 
         <java.version.source>1.8</java.version.source>
         <java.version.target>1.8</java.version.target>
@@ -260,7 +261,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.1</version>
+                    <version>3.0.0</version>
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
