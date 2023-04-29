@@ -7,7 +7,7 @@
     <!-- ====================================================================== -->
     <groupId>io.marto.aem.vassets</groupId>
     <artifactId>aem-versioned-assets-parent</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.6-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Versioned Assets Parent POM</name>
     <description>A way to version assets (typically designs &amp; clientlibs) in AEM.</description>
