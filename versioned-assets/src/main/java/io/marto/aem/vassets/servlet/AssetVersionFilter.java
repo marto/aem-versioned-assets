@@ -2,6 +2,7 @@ package io.marto.aem.vassets.servlet;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.math.NumberUtils.toLong;
+import static com.day.cq.commons.jcr.JcrConstants.NT_FILE;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -17,11 +18,15 @@ import org.apache.felix.scr.annotations.sling.SlingFilter;
 import org.apache.felix.scr.annotations.sling.SlingFilterScope;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.request.RequestPathInfo;
+import org.apache.sling.api.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.marto.aem.vassets.AssetVersionService;
 import io.marto.aem.vassets.model.Configuration;
+import io.marto.aem.vassets.sling.CustomSlingHttpServletRequestWrapper;
+import io.marto.aem.vassets.sling.NoExtensionRequestPathInfoWrapper;
 
 /**
  * A {@link Filter Servlet Filter} that intercepts any requests with a version fingerprint, checks the fingerprint to see if it's valid
@@ -57,7 +62,13 @@ public class AssetVersionFilter extends AbstractSlingFilter {
                     final String newPath = uri(uriBase, null, matcher.group(3), null);
                     LOG.debug("Rewriting request {} to {}", requestURI, newPath);
                     response.setHeader("Cache-Control", "max-age=31104000, public");
-                    request.getRequestDispatcher(newPath).include(request, response);
+                    SlingHttpServletRequest requestWrapper = request;
+                    if (isFileResource(request, newPath)) {
+                        LOG.debug("Overriding extension for the request.");
+                        RequestPathInfo requestPathInfoWrapper = new NoExtensionRequestPathInfoWrapper(request.getRequestPathInfo());
+                        requestWrapper = new CustomSlingHttpServletRequestWrapper(request, requestPathInfoWrapper);
+                    }
+                    request.getRequestDispatcher(newPath).include(requestWrapper, response);
                     processed = true;
                 } else {
                     final String newPath = uri(uriBase, conf.getVersion(), matcher.group(3),request.getQueryString());
@@ -91,6 +102,11 @@ public class AssetVersionFilter extends AbstractSlingFilter {
             uri.append("?").append(queryString);
         }
         return uri.toString();
+    }
+
+    private boolean isFileResource(SlingHttpServletRequest request, String path) {
+        Resource resource = request.getResourceResolver().resolve(path);
+        return resource.isResourceType(NT_FILE);
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(AssetVersionFilter.class);
