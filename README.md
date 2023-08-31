@@ -11,6 +11,43 @@ TODO
 ## Setup & Install
 TODO
 
+## Releasing Project
+```
+  Add this to your ~/.m2/setting.xml
+  <servers>
+    <!-- OSSRH -->
+    <server>
+      <id>ossrh</id>
+      <username>${env.OSSRH_USER}</username>
+      <password>${env.OSSRH_PASS}</password>
+    </server>
+    <server>
+      <id>gpg.passphrase</id>
+      <passphrase>${env.GPG_PASS}</passphrase>
+    </server>
+    <server>
+       <id>github</id>
+       <username>marto</username>
+       <password>${env.GIT_TOKEN}</password>
+    </server>
+  </servers>
+
+ # Setup your creds
+  unset HISTFILE
+   export GIT_USER=
+   export GPG_PASS=
+   export OSSRH_USER=
+   export OSSRH_PASS=
+   export GIT_TOKEN=
+
+ # Then Run
+
+ git co develop
+ git mvn -P release release:prepare
+ git mvn -P release release:perform
+```
+
+# Get token from https://github.com/settings/
 
 ### Project Struture
 
